@@ -11,78 +11,60 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/produit')]
+#[Route('/api/produits')]
 final class ProduitController extends AbstractController
 {
-        #[Route(name: 'app_produit_index_json', methods: ['GET'])]
-    public function indexJson(ProduitRepository $produitRepository): JsonResponse
+    #[Route('', name: 'api_produits_list', methods: ['GET'])]
+    public function list(ProduitRepository $produitRepository): JsonResponse
     {
         $produits = $produitRepository->findAll();
-
         return $this->json($produits);
     }
 
-    #[Route(name: 'app_produit_index', methods: ['GET'])]
-        public function index(ProduitRepository $produitRepository): Response
-        {
-            return $this->render('produit/index.html.twig', [
-                'produits' => $produitRepository->findAll(),
-            ]);
-        }
+    #[Route('/{id}', name: 'api_produits_show', methods: ['GET'])]
+    public function show(Produit $produit): JsonResponse
+    {
+        return $this->json($produit);
+    }
 
-        #[Route('/new', name: 'app_produit_new', methods: ['GET', 'POST'])]
-        public function new(Request $request, EntityManagerInterface $entityManager): Response
-        {
-            $produit = new Produit();
-            $form = $this->createForm(ProduitForm::class, $produit);
-            $form->handleRequest($request);
+    #[Route('', name: 'api_produits_create', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $produit = $serializer->deserialize($request->getContent(), Produit::class, 'json');
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->persist($produit);
-                $entityManager->flush();
+        $entityManager->persist($produit);
+        $entityManager->flush();
 
-                return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
+        return $this->json($produit, Response::HTTP_CREATED);
+    }
+
+    #[Route('/{id}', name: 'api_produits_update', methods: ['PUT'])]
+    public function update(Request $request, Produit $produit, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        foreach ($data as $key => $value) {
+            if (property_exists($produit, $key)) {
+                $setter = 'set' . ucfirst($key);
+                if (method_exists($produit, $setter)) {
+                    $produit->$setter($value);
+                }
             }
-
-            return $this->render('produit/new.html.twig', [
-                'produit' => $produit,
-                'form' => $form,
-            ]);
         }
 
-        #[Route('/{id}', name: 'app_produit_show', methods: ['GET'])]
-        public function show(Produit $produit): Response
-        {
-            return $this->render('produit/show.html.twig', [
-                'produit' => $produit,
-            ]);
-        }
+        $entityManager->flush();
 
-        #[Route('/{id}/edit', name: 'app_produit_edit', methods: ['GET', 'POST'])]
-        public function edit(Request $request, Produit $produit, EntityManagerInterface $entityManager): Response
-        {
-            $form = $this->createForm(ProduitForm::class, $produit);
-            $form->handleRequest($request);
+        return $this->json($produit);
+    }
 
-            if ($form->isSubmitted() && $form->isValid()) {
-                $entityManager->flush();
+    #[Route('/{id}', name: 'api_produits_delete', methods: ['DELETE'])]
+    public function delete(Produit $produit, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $entityManager->remove($produit);
+        $entityManager->flush();
 
-                return $this->redirectToRoute('app_produit_index', [], Response::HTTP_SEE_OTHER);
-            }
-
-            return $this->render('produit/edit.html.twig', [
-                'produit' => $produit,
-                'form' => $form,
-            ]);
-        }
-
-        #[Route('/api/delete/{id}', name: 'api_produit_delete', methods: ['DELETE', 'GET'])]
-        public function deleteApi(Request $request, Produit $produit, EntityManagerInterface $entityManager): JsonResponse
-        {
-            $entityManager->remove($produit);
-            $entityManager->flush();
-        
-            return new JsonResponse(['message' => 'Produit supprimé avec succès.'], Response::HTTP_NO_CONTENT);
-        }
+        return new JsonResponse(['message' => 'Produit supprimé avec succès.'], Response::HTTP_NO_CONTENT);
+    }
 }

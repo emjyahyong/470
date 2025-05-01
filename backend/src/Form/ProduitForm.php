@@ -25,11 +25,11 @@ class ProduitForm extends AbstractType
             ->add('date_creation')
             ->add('date_modification')
             ->add('is_active')
-            // ->add('categories', EntityType::class, [
-            //     'class' => Categorie::class,
-            //     'choice_label' => 'id',
-            //     'multiple' => true,
-            // ])
+            ->add('categories', EntityType::class, [
+                'class' => Categorie::class,
+                'choice_label' => 'id',
+                'multiple' => true,
+            ])
         ;
     }
 
