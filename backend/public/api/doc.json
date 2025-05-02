@@ -1,24 +1,13 @@
 {
     "openapi": "3.0.0",
     "info": {
-      "title": "API Produits et Utilisateurs",
+      "title": "API Produits",
       "version": "1.0.0"
     },
-    "tags": [
-      {
-        "name": "Produits",
-        "description": "Opérations liées aux produits"
-      },
-      {
-        "name": "Users",
-        "description": "Opérations liées aux utilisateurs"
-      }
-    ],
     "paths": {
       "/api/produits": {
         "get": {
-          "tags": ["Produits"],
-          "summary": "Lister tous les produits",
+          "summary": "Liste des produits",
           "responses": {
             "200": {
               "description": "Liste des produits",
@@ -26,7 +15,9 @@
                 "application/json": {
                   "schema": {
                     "type": "array",
-                    "items": { "$ref": "#/components/schemas/Produit" }
+                    "items": {
+                      "$ref": "#/components/schemas/Produit"
+                    }
                   }
                 }
               }
@@ -34,24 +25,26 @@
           }
         },
         "post": {
-          "tags": ["Produits"],
           "summary": "Créer un produit",
           "requestBody": {
             "required": true,
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Produit" }
+                "schema": {
+                  "$ref": "#/components/schemas/Produit"
+                }
               }
             }
           },
           "responses": {
-            "201": { "description": "Produit créé" }
+            "201": {
+              "description": "Produit créé"
+            }
           }
         }
       },
       "/api/produits/{id}": {
         "get": {
-          "tags": ["Produits"],
           "summary": "Afficher un produit",
           "parameters": [
             {
@@ -63,17 +56,18 @@
           ],
           "responses": {
             "200": {
-              "description": "Produit trouvé",
+              "description": "Détail du produit",
               "content": {
                 "application/json": {
-                  "schema": { "$ref": "#/components/schemas/Produit" }
+                  "schema": {
+                    "$ref": "#/components/schemas/Produit"
+                  }
                 }
               }
             }
           }
         },
         "put": {
-          "tags": ["Produits"],
           "summary": "Modifier un produit",
           "parameters": [
             {
@@ -87,16 +81,17 @@
             "required": true,
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Produit" }
+                "schema": {
+                  "$ref": "#/components/schemas/Produit"
+                }
               }
             }
           },
           "responses": {
-            "200": { "description": "Produit modifié" }
+            "200": { "description": "Produit mis à jour" }
           }
         },
         "delete": {
-          "tags": ["Produits"],
           "summary": "Supprimer un produit",
           "parameters": [
             {
@@ -112,23 +107,6 @@
         }
       },
       "/api/users": {
-        "get": {
-          "tags": ["Users"],
-          "summary": "Lister tous les utilisateurs",
-          "responses": {
-            "200": {
-              "description": "Liste des utilisateurs",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "type": "array",
-                    "items": { "$ref": "#/components/schemas/User" }
-                  }
-                }
-              }
-            }
-          }
-        },
         "post": {
           "tags": ["Users"],
           "summary": "Créer un utilisateur",
@@ -215,8 +193,16 @@
           "properties": {
             "id": { "type": "integer", "readOnly": true },
             "nom": { "type": "string" },
+            "slug": { "type": "string" },
+            "description": { "type": "string" },
             "prix": { "type": "number", "format": "float" },
-            "description": { "type": "string" }
+            "tva": { "type": "number", "format": "float" },
+            "stock": { "type": "integer" },
+            "reference": { "type": "string" },
+            "image_principale": { "type": "string" },
+            "date_creation": { "type": "string", "format": "date-time" },
+            "date_modification": { "type": "string", "format": "date-time" },
+            "is_active": { "type": "boolean" }
           },
           "required": ["nom", "prix"]
         },
