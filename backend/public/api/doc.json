@@ -1,0 +1,239 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API Produits et Utilisateurs",
+      "version": "1.0.0"
+    },
+    "tags": [
+      {
+        "name": "Produits",
+        "description": "Opérations liées aux produits"
+      },
+      {
+        "name": "Users",
+        "description": "Opérations liées aux utilisateurs"
+      }
+    ],
+    "paths": {
+      "/api/produits": {
+        "get": {
+          "tags": ["Produits"],
+          "summary": "Lister tous les produits",
+          "responses": {
+            "200": {
+              "description": "Liste des produits",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/Produit" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Produits"],
+          "summary": "Créer un produit",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Produit" }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "Produit créé" }
+          }
+        }
+      },
+      "/api/produits/{id}": {
+        "get": {
+          "tags": ["Produits"],
+          "summary": "Afficher un produit",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Produit trouvé",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/Produit" }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": ["Produits"],
+          "summary": "Modifier un produit",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Produit" }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Produit modifié" }
+          }
+        },
+        "delete": {
+          "tags": ["Produits"],
+          "summary": "Supprimer un produit",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "204": { "description": "Produit supprimé" }
+          }
+        }
+      },
+      "/api/users": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Lister tous les utilisateurs",
+          "responses": {
+            "200": {
+              "description": "Liste des utilisateurs",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Users"],
+          "summary": "Créer un utilisateur",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "responses": {
+            "201": { "description": "Utilisateur créé" }
+          }
+        }
+      },
+      "/api/users/{id}": {
+        "get": {
+          "tags": ["Users"],
+          "summary": "Afficher un utilisateur",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Utilisateur trouvé",
+              "content": {
+                "application/json": {
+                  "schema": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": ["Users"],
+          "summary": "Modifier un utilisateur",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/User" }
+              }
+            }
+          },
+          "responses": {
+            "200": { "description": "Utilisateur modifié" }
+          }
+        },
+        "delete": {
+          "tags": ["Users"],
+          "summary": "Supprimer un utilisateur",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": { "type": "integer" }
+            }
+          ],
+          "responses": {
+            "204": { "description": "Utilisateur supprimé" }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Produit": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "readOnly": true },
+            "nom": { "type": "string" },
+            "prix": { "type": "number", "format": "float" },
+            "description": { "type": "string" }
+          },
+          "required": ["nom", "prix"]
+        },
+        "User": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer", "readOnly": true },
+            "nom": { "type": "string" },
+            "email": { "type": "string", "format": "email" },
+            "roles": {
+              "type": "array",
+              "items": { "type": "string" }
+            }
+          },
+          "required": ["nom", "email"]
+        }
+      }
+    }
+  }
+  
